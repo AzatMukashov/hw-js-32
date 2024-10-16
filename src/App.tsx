@@ -1,12 +1,12 @@
-import React from 'react';
-import Chat from './components/ViewMessages';
+import React from "react";
+import Chat from "./components/ViewMessages";
 
 const App: React.FC = () => {
   return (
     <>
-      <Chat/>
+      <Chat />
     </>
-  )
+  );
 };
 
 export default App;

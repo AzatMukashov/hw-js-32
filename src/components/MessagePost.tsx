@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
-import { MessageForm } from '../types';
-import { Button, Form, FormGroup, FormLabel } from 'react-bootstrap';
+import React, { useState } from "react";
+import { MessageForm } from "../types";
+import { Button, Form, FormGroup, FormLabel } from "react-bootstrap";
 
 interface Props {
   messageToSend: (message: MessageForm) => void;
 }
 
-const MessagePost: React.FC<Props> = ({messageToSend}) => {
+const MessagePost: React.FC<Props> = ({ messageToSend }) => {
   const [form, setForm] = useState<MessageForm>({
-    author: '',
-    message: '',
+    author: "",
+    message: "",
   });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (form.author.trim().length > 0 && form.message.trim().length > 0) {
-      messageToSend({...form});
+      messageToSend({ ...form });
       setForm({
-        author: '',
-        message: '',
+        author: "",
+        message: "",
       });
     } else {
-      alert('dont empty fields');
+      alert("dont empty fields");
     }
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm(prevState => {
+    setForm((prevState) => {
       return {
         ...prevState,
         [e.target.name]: e.target.value,
-      }
+      };
     });
   };
   return (
     <>
       <Form onSubmit={onSubmit}>
-        <FormGroup className='d-flex gap-2 flex-column'>
+        <FormGroup className="d-flex gap-2 flex-column">
           <Form.Group>
             <FormLabel htmlFor="author">Author</FormLabel>
             <Form.Control
@@ -63,7 +63,11 @@ const MessagePost: React.FC<Props> = ({messageToSend}) => {
               as="input"
               type="submit"
               value="Send"
-              disabled={form.author.trim().length === 0 || form.message.trim().length === 0}/>
+              disabled={
+                form.author.trim().length === 0 ||
+                form.message.trim().length === 0
+              }
+            />
           </Form.Group>
         </FormGroup>
       </Form>

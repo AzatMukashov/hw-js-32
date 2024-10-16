@@ -1,16 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
-import { IMessage, MessageForm } from '../types';
-import { Container } from 'react-bootstrap';
-import MessagePost from './MessagePost.tsx';
-import MessageItem from './MessageItem.tsx';
-import axiosApi from '../axiosApi.ts';
+import { useCallback, useEffect, useState } from "react";
+import { IMessage, MessageForm } from "../types";
+import { Container } from "react-bootstrap";
+import MessagePost from "./MessagePost.tsx";
+import MessageItem from "./MessageItem.tsx";
+import axiosApi from "../axiosApi.ts";
 
 const Chat = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [lastDate, setLastDate] = useState<null | string>(null);
 
   const fetchMessages = useCallback(async (datetime: string | null) => {
-    const response: { data: IMessage[] } = await axiosApi.get<IMessage[]>(datetime ? `?datetime=${datetime}`: '');
+    const response: { data: IMessage[] } = await axiosApi.get<IMessage[]>(
+      datetime ? `?datetime=${datetime}` : "",
+    );
 
     if (response.data.length > 0 && datetime === null) {
       setLastDate(response.data[response.data.length - 1].datetime);
@@ -30,18 +32,18 @@ const Chat = () => {
 
   const messageToSend = async (message: MessageForm) => {
     try {
-      await axiosApi.post('', new URLSearchParams({...message}));
+      await axiosApi.post("", new URLSearchParams({ ...message }));
     } catch (e) {
       console.error(e);
     }
   };
   return (
     <Container>
-      <MessagePost messageToSend={messageToSend}/>
-      <hr/>
+      <MessagePost messageToSend={messageToSend} />
+      <hr />
       <Container>
         {messages.map((message) => (
-          <MessageItem key={message._id} message={message}/>
+          <MessageItem key={message._id} message={message} />
         ))}
       </Container>
     </Container>
