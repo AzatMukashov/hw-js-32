@@ -1,21 +1,51 @@
-import React from 'react';
-import { Massage } from '../types';
+import { useCallback, useEffect, useState } from 'react';
+import { IMessage, MessageForm } from '../types';
+import { Container } from 'react-bootstrap';
+import MessagePost from './MessagePost.tsx';
+import MessageItem from './MessageItem.tsx';
+import axiosApi from '../axiosApi.ts';
 
-interface ViewMessageProps {
-  messages: Massage[];
-}
+const Chat = () => {
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [lastDate, setLastDate] = useState<null | string>(null);
 
-const ViewMessages: React.FC<ViewMessageProps> = ({messages}) => {
+  const fetchMessages = useCallback(async (datetime: string | null) => {
+    const response: { data: IMessage[] } = await axiosApi.get<IMessage[]>(datetime ? `?datetime=${datetime}`: '');
+
+    if (response.data.length > 0 && datetime === null) {
+      setLastDate(response.data[response.data.length - 1].datetime);
+      setMessages((prevState) => [...response.data.reverse(), ...prevState]);
+    } else if (response.data.length > 0 && datetime !== null) {
+      setLastDate(response.data[response.data.length - 1].datetime);
+      setMessages((prevState) => [...response.data, ...prevState]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      void fetchMessages(lastDate);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [fetchMessages, lastDate]);
+
+  const messageToSend = async (message: MessageForm) => {
+    try {
+      await axiosApi.post('', new URLSearchParams({...message}));
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
-    <div>
-      {messages.map((msg) => (
-        <div key={msg._id}>
-          <p><strong>{msg.author}</strong>: {msg.message}</p>
-          <p><small>{new Date(msg.datetime).toLocaleString()}</small></p>
-        </div>
-      ))}
-    </div>
+    <Container>
+      <MessagePost messageToSend={messageToSend}/>
+      <hr/>
+      <Container>
+        {messages.map((message) => (
+          <MessageItem key={message._id} message={message}/>
+        ))}
+      </Container>
+    </Container>
   );
 };
 
-export default ViewMessages;
+export default Chat;

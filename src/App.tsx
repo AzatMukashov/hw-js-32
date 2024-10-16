@@ -1,9 +1,12 @@
-import './App.css'
+import React from 'react';
+import Chat from './components/ViewMessages';
 
-const App = () => (
-  <>
+const App: React.FC = () => {
+  return (
+    <>
+      <Chat/>
+    </>
+  )
+};
 
-  </>
-);
-
-export default App
+export default App;
